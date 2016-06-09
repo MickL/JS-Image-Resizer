@@ -1,6 +1,9 @@
 /// <reference path="references.ts" />
 
 namespace ImageResizer {
+    /**
+     * Default options
+     */
     var _defaults:Options = {
         maxWidth:         500,   // px
         maxHeight:        500,   // px
@@ -191,6 +194,9 @@ namespace ImageResizer {
         return arguments[0];
     }
 
+    /**
+     * Handle some errors with incorrect options
+     */
     function errorHandling(settings) {
         if(settings.jpgQuality < 0 || settings.jpgQuality > 1)
             console.error('Option jpgQuality must be between 0 and 1');
