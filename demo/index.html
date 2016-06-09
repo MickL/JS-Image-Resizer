@@ -30,7 +30,7 @@
                 <div class="col-sm-12">
                     <h3>Select a file</h3>
                     <p>
-                        This example resizes to 300x300px and 90% JPG-Quality without upscaling it. Image will be displayed on the page without any upload. See browser console for more informations.
+                        This example resizes to 500x500px and 90% JPG-Quality without upscaling it. Image will be displayed on the page without any upload. See browser console for more informations.
                     </p>
                     <input type="file" id="inputFile">
                 </div>
@@ -43,11 +43,12 @@
                     <div id="result"></div>
                 </div>
             </div>
+        </div>
 
         <div class="footer-bar"></div>
     </div>
 
-    <script src="../dist/imageResizer.js"></script>
+    <script src="js/imageResizer.min.js"></script>
     <script src="js/modernizr-custom.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
@@ -59,6 +60,7 @@
                 // Detect filereader support
                 if (!Modernizr.filereader) {
                     $('#resultHeadline').show().text('Error');
+                    $('#processTime').text('');
                     $('#result').text('Your browser doesnt support File Reader API.');
                     $('#inputFile').val('');
                     return;
@@ -75,6 +77,7 @@
                 // Filetype is no image
                 if(!file.type.startsWith('image')) {
                     $('#resultHeadline').show().text('Error');
+                    $('#processTime').text('');
                     $('#result').text('Selected file '+ file.name +' is no image.');
                     $('#inputFile').val('');
                     return;
@@ -82,8 +85,8 @@
 
                 // Set options
                 var options = {
-                    maxWidth:   300,
-                    maxHeight:  300,
+                    maxWidth:   500,
+                    maxHeight:  500,
                     jpgQuality: 0.9,
                     debug:      true
                 };
