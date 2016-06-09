@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>JavaScript ImageResizer Demo - Mick Lawitzke</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <a class="logo" href="http://www.lawitzke.com">
+                <img src="img/logo.png" alt="Mick Lawitzke Interface Design" id="logo">
+            </a>
+
+            <div class="row">
+                <div class="col-sm-12 text-hero">
+                    <h1>JavaScript ImageResizer Demo</h1>
+                    <p>
+                        Resize and/or set jpg-quality on client side, using plain JavaScript. Only 3KB and written in TypeScript. <a href="">GitHub Project</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>Select a file</h3>
+                    <p>
+                        This example resizes to 300x300px and 90% JPG-Quality without upscaling it. Image will be displayed on the page without any upload. See browser console for more informations.
+                    </p>
+                    <input type="file" id="inputFile">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 style="display: none;" id="resultHeadline">Result</h3>
+                    <div id="processTime"></div>
+                    <div id="result"></div>
+                </div>
+            </div>
+
+        <div class="footer-bar"></div>
+    </div>
+
+    <script src="../dist/imageResizer.js"></script>
+    <script src="js/modernizr-custom.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <script>
+        $(function() {
+            var t0, t1;
+
+            $('#inputFile').on('change', function () {
+                // Detect filereader support
+                if (!Modernizr.filereader) {
+                    $('#resultHeadline').show().text('Error');
+                    $('#result').text('Your browser doesnt support File Reader API.');
+                    $('#inputFile').val('');
+                    return;
+                }
+
+                // Get file
+                var file = $('#inputFile')[0].files[0];
+
+                // File object doesnt exist = no file selected or not supported by browser
+                if (!file) {
+                    return;
+                }
+
+                // Filetype is no image
+                if(!file.type.startsWith('image')) {
+                    $('#resultHeadline').show().text('Error');
+                    $('#result').text('Selected file '+ file.name +' is no image.');
+                    $('#inputFile').val('');
+                    return;
+                }
+
+                // Set options
+                var options = {
+                    maxWidth:   300,
+                    maxHeight:  300,
+                    jpgQuality: 0.9,
+                    debug:      true
+                };
+
+                // Start time
+                t0 = performance.now();
+
+                ImageResizer.resizeImage(file, options, function (result) {
+                    // End time
+                    t1 = performance.now();
+                    // Display processing time
+                    $('#processTime').html('<p>Processed image within ' + (t1 - t0).toFixed(2) + ' milliseconds.</p>');
+
+                    // Show Result headline
+                    $('#resultHeadline').show().text('Result');
+                    // Clear input field
+                    $('#inputFile').val('');
+
+                    // Create and display image
+                    var image = new Image();
+                    image.src = URL.createObjectURL(result);
+                    $('#result').html(image);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

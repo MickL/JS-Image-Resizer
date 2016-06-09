@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outFile":        "../dist/imageResizer.js",
+    "target":         "ES5",
+    "sourceMap":      true,
+    "removeComments": true
+  },
+  "files": [
+    "ImageResizer.ts"
+  ]
+}
