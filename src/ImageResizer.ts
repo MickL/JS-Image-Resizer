@@ -89,20 +89,47 @@ namespace ImageResizer {
                 canvas.width   = width;
                 canvas.height  = height;
 
-                /// Step 1 in down-scaling
-                var oc = document.createElement('canvas'),
-                    octx = oc.getContext('2d');
+                // Calculate steps needed for down-scaling
+                var steps;
 
-                oc.width  = img.width  * 0.5;
-                oc.height = img.height * 0.5;
-                octx.drawImage(img, 0, 0, oc.width, oc.height);
+                if(width > height) {
+                    steps = Math.ceil(Math.log(img.width / width)   / Math.log(2));
+                } else {
+                    steps = Math.ceil(Math.log(img.height / height) / Math.log(2));
+                }
 
-                /// Step 2
-                octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
-                
-                // Draw final result
-                ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
-                    0, 0, canvas.width, canvas.height);
+                console.log('Down-scaling-steps needed: ' + steps);
+                console.log('Image: ' + img.width);
+                console.log('Goal:  ' + width);
+
+                if(steps > 1) {
+                    /// Step 1 in down-scaling
+                    var oc = document.createElement('canvas'),
+                        octx = oc.getContext('2d');
+
+                    oc.width  = img.width  * 0.5;
+                    oc.height = img.height * 0.5;
+                    octx.drawImage(img, 0, 0, oc.width, oc.height);
+
+                    // TODO: Iterate steps
+                    // for(var i=2; i<=steps; i++) {
+                    //     // Step i
+                    //     oc.width  = oc.width  * 0.5;
+                    //     oc.height = oc.height * 0.5;
+                    //     octx.drawImage(oc, 0, 0, oc.width, oc.height);
+                    //     console.log(oc.width);
+                    // }
+                    //
+
+                    console.log('Final: ' + oc.width);
+
+                    // Draw final result
+                    ctx.drawImage(oc, 0, 0, oc.width, oc.height,
+                        0, 0, canvas.width, canvas.height);
+                } else {
+                    ctx.drawImage(img, 0, 0, width, height);
+                }
+
 
                 // Sharpen
                 if(settings.sharpen > 0) {

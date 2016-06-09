@@ -57,12 +57,27 @@ var ImageResizer;
                 var ctx = canvas.getContext("2d");
                 canvas.width = width;
                 canvas.height = height;
-                var oc = document.createElement('canvas'), octx = oc.getContext('2d');
-                oc.width = img.width * 0.5;
-                oc.height = img.height * 0.5;
-                octx.drawImage(img, 0, 0, oc.width, oc.height);
-                octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
-                ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5, 0, 0, canvas.width, canvas.height);
+                var steps;
+                if (width > height) {
+                    steps = Math.ceil(Math.log(img.width / width) / Math.log(2));
+                }
+                else {
+                    steps = Math.ceil(Math.log(img.height / height) / Math.log(2));
+                }
+                console.log('Down-scaling-steps needed: ' + steps);
+                console.log('Image: ' + img.width);
+                console.log('Goal:  ' + width);
+                if (steps > 1) {
+                    var oc = document.createElement('canvas'), octx = oc.getContext('2d');
+                    oc.width = img.width * 0.5;
+                    oc.height = img.height * 0.5;
+                    octx.drawImage(img, 0, 0, oc.width, oc.height);
+                    console.log('Final: ' + oc.width);
+                    ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+                }
+                else {
+                    ctx.drawImage(img, 0, 0, width, height);
+                }
                 if (settings.sharpen > 0) {
                     if (options.debug)
                         console.log('Sharpening image ' + (settings.sharpen * 100) + '%');
