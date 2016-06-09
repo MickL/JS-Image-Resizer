@@ -14,6 +14,8 @@ namespace ImageResizer {
 
     /**
      * Resize an image and set jpg-quality
+     *
+     * @see https://hacks.mozilla.org/2011/01/how-to-develop-a-html5-image-uploader/
      */
     export function resizeImage(file, options, callbackFn) {
         if(!Modernizr.blobconstructor) {
@@ -150,7 +152,7 @@ namespace ImageResizer {
     /**
      * Data-URL to Blob
      *
-     * @source https://github.com/ebidel/filer.js/blob/master/src/filer.js#L137
+     * @see https://github.com/ebidel/filer.js/blob/master/src/filer.js#L137
      */
     function _dataURLToBlob(dataURL): Blob {
         var BASE64_MARKER = ';base64,';
@@ -179,7 +181,7 @@ namespace ImageResizer {
     /**
      * Mimic jQuery.extend
      *
-     * @source http://stackoverflow.com/a/11197343/5688490
+     * @see http://stackoverflow.com/a/11197343/5688490
      */
     function _extend(obj, def, config) {
         for(var i=1; i<arguments.length; i++)

@@ -52,7 +52,7 @@ Feel free to edit, extend, or improve the code. I will try to merge pull-request
 You can report bugs or feature requests within GitHub Issues.
 
 ##Credits
-Alot of code is proudly copied from StackOverflow and other sources. See the comments for sources. 
+Alot of code is proudly copied from StackOverflow and other sources. See the `@see` comments for sources. 
 
 ##Lincense
 ImageResizer is released under the [MIT License](https://ben.mit-license.org/)
