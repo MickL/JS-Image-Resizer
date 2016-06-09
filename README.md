@@ -36,6 +36,7 @@ var myCallbackFn = function(resultFile) {
     maxWidth:         500,   // px
     maxHeight:        500,   // px
     resize:           true,  // Set to false to just set jpg-quality
+    sharpen:          0.1    // 0-1, sharpens the image after resize
     jpgQuality:       0.9,   // 0-1
     returnFileObject: true,  // Returns a file-object if browser support. Set to false to always return blob.
     upscale:          false, // Set to true to upscale the image if smaller than maxDimensions

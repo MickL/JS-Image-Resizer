@@ -8,6 +8,7 @@ namespace ImageResizer {
         maxWidth:         500,   // px
         maxHeight:        500,   // px
         resize:           true,  // Set to false to just set jpg-quality
+        sharpen:          0.1,   // 0-1
         jpgQuality:       0.9,   // 0-1
         returnFileObject: true,  // Returns a file-object if browser support. Set to false to always return blob.
         upscale:          false, // Set to true to upscale the image if smaller than maxDimensions
@@ -19,6 +20,7 @@ namespace ImageResizer {
      * Resize an image and set jpg-quality
      *
      * @see https://hacks.mozilla.org/2011/01/how-to-develop-a-html5-image-uploader/
+     * @see http://stackoverflow.com/a/19262385/5688490
      */
     export function resizeImage(file, options, callbackFn) {
         if(!Modernizr.blobconstructor) {
@@ -82,13 +84,33 @@ namespace ImageResizer {
 
             if(resized || settings.jpgQuality != 1) {
                 // Create canvas
-                var canvas = document.createElement("canvas");
-                var ctx = canvas.getContext("2d");
+                var canvas     = document.createElement("canvas");
+                var ctx        = canvas.getContext("2d");
+                canvas.width   = width;
+                canvas.height  = height;
 
-                // Draw image
-                canvas.width  = width;
-                canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
+                /// Step 1 in down-scaling
+                var oc = document.createElement('canvas'),
+                    octx = oc.getContext('2d');
+
+                oc.width  = img.width  * 0.5;
+                oc.height = img.height * 0.5;
+                octx.drawImage(img, 0, 0, oc.width, oc.height);
+
+                /// Step 2
+                octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+                
+                // Draw final result
+                ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
+                    0, 0, canvas.width, canvas.height);
+
+                // Sharpen
+                if(settings.sharpen > 0) {
+                    if(options.debug)
+                        console.log('Sharpening image ' + (settings.sharpen *100) + '%');
+
+                    _sharpen(ctx, canvas.width, canvas.height, settings.sharpen);
+                }
 
                 // Get Data-URL and set image quality
                 var dataURL = canvas.toDataURL("image/jpeg", settings.jpgQuality);
@@ -118,7 +140,7 @@ namespace ImageResizer {
 
                     if(options.debug)
                         console.log(
-                            'Returning File object: \n' +
+                            'Finished processing. Returning File object: \n' +
                             '  name: '             + newFile.name             + '\n' +
                             '  lastModified: '     + newFile.lastModifiedDate + '\n' +
                             '  size: '             + newFile.size             + '\n' +
@@ -132,7 +154,7 @@ namespace ImageResizer {
 
                     if(options.debug)
                         console.log(
-                            'Returning Blob object:\n' +
+                            'Finished processing. Returning Blob object:\n' +
                             '  size: '             + blob.size + '\n' +
                             '  type: '             + blob.type
                         );
@@ -150,6 +172,60 @@ namespace ImageResizer {
         };
 
         img.src = window.URL.createObjectURL(file);
+    }
+
+    /**
+     * Sharpen image
+     *
+     * @see http://stackoverflow.com/questions/18922880/html5-canvas-resize-downscale-image-high-quality/19235791#19235791
+     */
+     function _sharpen(ctx, w, h, mix) {
+
+        var weights =  [0, -1, 0,  -1, 5, -1,  0, -1, 0],
+            katet = Math.round(Math.sqrt(weights.length)),
+            half = (katet * 0.5) |0,
+            dstData = ctx.createImageData(w, h),
+            dstBuff = dstData.data,
+            srcBuff = ctx.getImageData(0, 0, w, h).data,
+            y = h;
+
+        while(y--) {
+            var x = w;
+
+            while(x--) {
+
+                var sy = y,
+                    sx = x,
+                    dstOff = (y * w + x) * 4,
+                    r = 0, g = 0, b = 0, a = 0;
+
+                for (var cy = 0; cy < katet; cy++) {
+                    for (var cx = 0; cx < katet; cx++) {
+
+                        var scy = sy + cy - half;
+                        var scx = sx + cx - half;
+
+                        if (scy >= 0 && scy < h && scx >= 0 && scx < w) {
+
+                            var srcOff = (scy * w + scx) * 4;
+                            var wt = weights[cy * katet + cx];
+
+                            r += srcBuff[srcOff] * wt;
+                            g += srcBuff[srcOff + 1] * wt;
+                            b += srcBuff[srcOff + 2] * wt;
+                            a += srcBuff[srcOff + 3] * wt;
+                        }
+                    }
+                }
+
+                dstBuff[dstOff] = r * mix + srcBuff[dstOff] * (1 - mix);
+                dstBuff[dstOff + 1] = g * mix + srcBuff[dstOff + 1] * (1 - mix);
+                dstBuff[dstOff + 2] = b * mix + srcBuff[dstOff + 2] * (1 - mix)
+                dstBuff[dstOff + 3] = srcBuff[dstOff + 3];
+            }
+        }
+
+        ctx.putImageData(dstData, 0, 0);
     }
 
     /**
@@ -200,5 +276,8 @@ namespace ImageResizer {
     function errorHandling(settings) {
         if(settings.jpgQuality < 0 || settings.jpgQuality > 1)
             console.error('Option jpgQuality must be between 0 and 1');
+
+        if(settings.sharpen < 0 || settings.sharpen > 1)
+            console.error('Option sharpen must be between 0 and 1');
     }
 }

@@ -4,6 +4,7 @@ var ImageResizer;
         maxWidth: 500,
         maxHeight: 500,
         resize: true,
+        sharpen: 0.1,
         jpgQuality: 0.9,
         returnFileObject: true,
         upscale: false,
@@ -56,7 +57,17 @@ var ImageResizer;
                 var ctx = canvas.getContext("2d");
                 canvas.width = width;
                 canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
+                var oc = document.createElement('canvas'), octx = oc.getContext('2d');
+                oc.width = img.width * 0.5;
+                oc.height = img.height * 0.5;
+                octx.drawImage(img, 0, 0, oc.width, oc.height);
+                octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+                ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5, 0, 0, canvas.width, canvas.height);
+                if (settings.sharpen > 0) {
+                    if (options.debug)
+                        console.log('Sharpening image ' + (settings.sharpen * 100) + '%');
+                    _sharpen(ctx, canvas.width, canvas.height, settings.sharpen);
+                }
                 var dataURL = canvas.toDataURL("image/jpeg", settings.jpgQuality);
                 var blob = _dataURLToBlob(dataURL);
                 if (options.debug) {
@@ -76,7 +87,7 @@ var ImageResizer;
                         console.log('Renamed file from \'' + file.name + '\' to \'' + fileName + '\'');
                     var newFile = new File([blob], fileName, { type: blob.type, lastModified: (new Date()).getTime() });
                     if (options.debug)
-                        console.log('Returning File object: \n' +
+                        console.log('Finished processing. Returning File object: \n' +
                             '  name: ' + newFile.name + '\n' +
                             '  lastModified: ' + newFile.lastModifiedDate + '\n' +
                             '  size: ' + newFile.size + '\n' +
@@ -87,7 +98,7 @@ var ImageResizer;
                     if (!Modernizr.filesystem && options.debug)
                         console.info('Browser doesn\'t support File API');
                     if (options.debug)
-                        console.log('Returning Blob object:\n' +
+                        console.log('Finished processing. Returning Blob object:\n' +
                             '  size: ' + blob.size + '\n' +
                             '  type: ' + blob.type);
                     callbackFn(blob);
@@ -102,6 +113,34 @@ var ImageResizer;
         img.src = window.URL.createObjectURL(file);
     }
     ImageResizer.resizeImage = resizeImage;
+    function _sharpen(ctx, w, h, mix) {
+        var weights = [0, -1, 0, -1, 5, -1, 0, -1, 0], katet = Math.round(Math.sqrt(weights.length)), half = (katet * 0.5) | 0, dstData = ctx.createImageData(w, h), dstBuff = dstData.data, srcBuff = ctx.getImageData(0, 0, w, h).data, y = h;
+        while (y--) {
+            var x = w;
+            while (x--) {
+                var sy = y, sx = x, dstOff = (y * w + x) * 4, r = 0, g = 0, b = 0, a = 0;
+                for (var cy = 0; cy < katet; cy++) {
+                    for (var cx = 0; cx < katet; cx++) {
+                        var scy = sy + cy - half;
+                        var scx = sx + cx - half;
+                        if (scy >= 0 && scy < h && scx >= 0 && scx < w) {
+                            var srcOff = (scy * w + scx) * 4;
+                            var wt = weights[cy * katet + cx];
+                            r += srcBuff[srcOff] * wt;
+                            g += srcBuff[srcOff + 1] * wt;
+                            b += srcBuff[srcOff + 2] * wt;
+                            a += srcBuff[srcOff + 3] * wt;
+                        }
+                    }
+                }
+                dstBuff[dstOff] = r * mix + srcBuff[dstOff] * (1 - mix);
+                dstBuff[dstOff + 1] = g * mix + srcBuff[dstOff + 1] * (1 - mix);
+                dstBuff[dstOff + 2] = b * mix + srcBuff[dstOff + 2] * (1 - mix);
+                dstBuff[dstOff + 3] = srcBuff[dstOff + 3];
+            }
+        }
+        ctx.putImageData(dstData, 0, 0);
+    }
     function _dataURLToBlob(dataURL) {
         var BASE64_MARKER = ';base64,';
         if (dataURL.indexOf(BASE64_MARKER) == -1) {
@@ -130,6 +169,8 @@ var ImageResizer;
     function errorHandling(settings) {
         if (settings.jpgQuality < 0 || settings.jpgQuality > 1)
             console.error('Option jpgQuality must be between 0 and 1');
+        if (settings.sharpen < 0 || settings.sharpen > 1)
+            console.error('Option sharpen must be between 0 and 1');
     }
 })(ImageResizer || (ImageResizer = {}));
 //# sourceMappingURL=imageResizer.js.map
