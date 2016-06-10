@@ -30,7 +30,7 @@
                 <div class="col-sm-12">
                     <h3>Select a file</h3>
                     <p>
-                        This example resizes to 500x500px (w/o upscaling), sharpen 15% and set JPG-quality to 90%. Image will be displayed on this page without any upload. See browser console for more informations.
+                        This example resizes to 500x500px (w/o upscaling), sharpen 15% and set JPG-quality to 90%.<br>Image will be displayed on this page without any upload. See browser console for more informations.
                     </p>
                     <input type="file" id="inputFile">
                 </div>
@@ -48,9 +48,10 @@
         <div class="footer-bar"></div>
     </div>
 
-    <script src="js/imageResizer.min.js"></script>
-    <script src="js/modernizr-custom.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/startswith.js"></script>
+    <script src="js/modernizr-custom.js"></script>
+    <script src="js/imageResizer.min.js"></script>
 
     <script>
         $(function() {
@@ -61,7 +62,7 @@
                 if (!Modernizr.filereader) {
                     $('#resultHeadline').show().text('Error');
                     $('#processTime').text('');
-                    $('#result').text('Your browser doesnt support File Reader API.');
+                    $('#result').text('Your browser doesnt support File Reader API. Cannot load file from input field.');
                     $('#inputFile').val('');
                     return;
                 }
