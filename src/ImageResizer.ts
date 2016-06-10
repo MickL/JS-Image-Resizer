@@ -8,7 +8,7 @@ namespace ImageResizer {
         maxWidth:         500,   // px
         maxHeight:        500,   // px
         resize:           true,  // Set to false to just set jpg-quality
-        sharpen:          0.1,   // 0-1
+        sharpen:          0.15,  // 0-1
         jpgQuality:       0.9,   // 0-1
         returnFileObject: true,  // Returns a file-object if browser support. Set to false to always return blob.
         upscale:          false, // Set to true to upscale the image if smaller than maxDimensions
@@ -20,6 +20,8 @@ namespace ImageResizer {
      * Resize an image and set jpg-quality
      *
      * @see https://hacks.mozilla.org/2011/01/how-to-develop-a-html5-image-uploader/
+     * @see http://stackoverflow.com/a/19262385/5688490
+     * @see http://stackoverflow.com/a/19235791/5688490
      * @see http://stackoverflow.com/a/19262385/5688490
      */
     export function resizeImage(file, options, callbackFn) {
@@ -62,7 +64,6 @@ namespace ImageResizer {
             var height_old = height;
 
             var resized = false;
-            var _file;
 
             if(settings.resize) {
                 if (width > height) {
@@ -93,43 +94,35 @@ namespace ImageResizer {
                 var steps;
 
                 if(width > height) {
-                    steps = Math.ceil(Math.log(img.width / width)   / Math.log(2));
+                    steps = Math.ceil(Math.log(img.width  / width)  / Math.log(2));
                 } else {
                     steps = Math.ceil(Math.log(img.height / height) / Math.log(2));
                 }
 
-                console.log('Down-scaling-steps needed: ' + steps);
-                console.log('Image: ' + img.width);
-                console.log('Goal:  ' + width);
-
                 if(steps > 1) {
-                    /// Step 1 in down-scaling
-                    var oc = document.createElement('canvas'),
+                    var oc   = document.createElement('canvas'),
                         octx = oc.getContext('2d');
+                    
+                    var widthTmp, heightTmp;
 
-                    oc.width  = img.width  * 0.5;
-                    oc.height = img.height * 0.5;
+                    // Down-scaling step 1
+                    oc.width  = widthTmp  = img.width  * 0.5;
+                    oc.height = heightTmp = img.height * 0.5;
                     octx.drawImage(img, 0, 0, oc.width, oc.height);
 
-                    // TODO: Iterate steps
-                    // for(var i=2; i<=steps; i++) {
-                    //     // Step i
-                    //     oc.width  = oc.width  * 0.5;
-                    //     oc.height = oc.height * 0.5;
-                    //     octx.drawImage(oc, 0, 0, oc.width, oc.height);
-                    //     console.log(oc.width);
-                    // }
-                    //
+                    for(var i=2; i<steps; i++) {
+                        // Down-scaling step i
+                        widthTmp  *= 0.5;
+                        heightTmp *= 0.5;
+                        octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+                    }
 
-                    console.log('Final: ' + oc.width);
-
-                    // Draw final result
-                    ctx.drawImage(oc, 0, 0, oc.width, oc.height,
-                        0, 0, canvas.width, canvas.height);
+                    // Down-scaling step i+1
+                    ctx.drawImage(oc, 0, 0, widthTmp, heightTmp, 0, 0, canvas.width, canvas.height);
                 } else {
+                    // Draw final result
                     ctx.drawImage(img, 0, 0, width, height);
                 }
-
 
                 // Sharpen
                 if(settings.sharpen > 0) {
@@ -204,6 +197,7 @@ namespace ImageResizer {
     /**
      * Sharpen image
      *
+     * @see http://www.html5rocks.com/en/tutorials/canvas/imagefilters/
      * @see http://stackoverflow.com/questions/18922880/html5-canvas-resize-downscale-image-high-quality/19235791#19235791
      */
      function _sharpen(ctx, w, h, mix) {

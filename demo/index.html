@@ -21,7 +21,7 @@
                 <div class="col-sm-12 text-hero">
                     <h1>JavaScript ImageResizer Demo</h1>
                     <p>
-                        Resize and/or set jpg-quality on client side, using plain JavaScript. Only 3KB and written in TypeScript. <a href="">GitHub Project</a>
+                        Resize images nice and smoothly on client side, using plain JavaScript. Only 4KB minified. <a href="https://github.com/MickL/JS-ImageResizer">GitHub Project</a>
                     </p>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                 <div class="col-sm-12">
                     <h3>Select a file</h3>
                     <p>
-                        This example resizes to 500x500px and 90% JPG-Quality without upscaling it. Image will be displayed on the page without any upload. See browser console for more informations.
+                        This example resizes to 500x500px (w/o upscaling), sharpen 15% and set JPG-quality to 90%. Image will be displayed on this page without any upload. See browser console for more informations.
                     </p>
                     <input type="file" id="inputFile">
                 </div>
@@ -87,7 +87,6 @@
                 var options = {
                     maxWidth:   500,
                     maxHeight:  500,
-                    jpgQuality: 0.9,
                     debug:      true
                 };
 

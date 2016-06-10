@@ -1,16 +1,17 @@
 #JavaScript ImageResizer
-Resize and/or set jpg-quality on client side, using plain JavaScript. Only 3KB minified and written in TypeScript.
+Resize images and/or set jpg-quality on client side, using plain JavaScript. Only 4KB minified and written in TypeScript.
 
-ImageResizer returns a File-object if File API [is available](http://caniuse.com/#feat=fileapi). Otherwise it will return a Blob.
+This script offers smooth resizing by using multiple down-scaling steps(depending on source- and target-dimensions) and sharpen after resizing.
 
-If [Blob constructor](http://caniuse.com/#feat=fileapi) or [Canvas 2D drawing](http://caniuse.com/#feat=canvas) is not available, it just returns the original file. Therefore it should be usable in all browsers.
+ImageResizer returns a File-object if [File API](http://caniuse.com/#feat=fileapi) is available. Otherwise it returns a Blob. If [Blob constructor](http://caniuse.com/#feat=fileapi) or [Canvas 2D drawing](http://caniuse.com/#feat=canvas) is not available, it just returns the original file. Therefore it should be usable in all browsers.
+
 
 ##Demo
 [ImageResizer Demo](http://www.lawitzke.com/imageresizer)
 
 ##Usage
 Because image.onload is used, the resizing works asynchronous. Hence you have to specify a callback function.
-You can only change the jpg-quality without resizing the image by using the option `resize:false`. 
+You can also change the jpg-quality only, without resizing the image by using the option `resize:false`. 
 
 **Usage:**
 
@@ -36,7 +37,7 @@ var myCallbackFn = function(resultFile) {
     maxWidth:         500,   // px
     maxHeight:        500,   // px
     resize:           true,  // Set to false to just set jpg-quality
-    sharpen:          0.1    // 0-1, sharpens the image after resize
+    sharpen:          0.15   // 0-1, sharpens the image after resize
     jpgQuality:       0.9,   // 0-1
     returnFileObject: true,  // Returns a file-object if browser support. Set to false to always return blob.
     upscale:          false, // Set to true to upscale the image if smaller than maxDimensions
@@ -53,7 +54,7 @@ Feel free to edit, extend, or improve the code. I will try to merge pull-request
 You can report bugs or feature requests within GitHub Issues.
 
 ##Credits
-Alot of code is proudly copied from StackOverflow and other sources. See the `@see` comments for sources. 
+Alot of code is proudly copied from StackOverflow and other sources. `@see` the comments within source code for resources. 
 
 ##Lincense
 ImageResizer is released under the [MIT License](https://ben.mit-license.org/)

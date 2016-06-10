@@ -4,7 +4,7 @@ var ImageResizer;
         maxWidth: 500,
         maxHeight: 500,
         resize: true,
-        sharpen: 0.1,
+        sharpen: 0.15,
         jpgQuality: 0.9,
         returnFileObject: true,
         upscale: false,
@@ -35,7 +35,6 @@ var ImageResizer;
             var width_old = width;
             var height_old = height;
             var resized = false;
-            var _file;
             if (settings.resize) {
                 if (width > height) {
                     if (width > settings.maxWidth || settings.upscale) {
@@ -64,16 +63,18 @@ var ImageResizer;
                 else {
                     steps = Math.ceil(Math.log(img.height / height) / Math.log(2));
                 }
-                console.log('Down-scaling-steps needed: ' + steps);
-                console.log('Image: ' + img.width);
-                console.log('Goal:  ' + width);
                 if (steps > 1) {
                     var oc = document.createElement('canvas'), octx = oc.getContext('2d');
-                    oc.width = img.width * 0.5;
-                    oc.height = img.height * 0.5;
+                    var widthTmp, heightTmp;
+                    oc.width = widthTmp = img.width * 0.5;
+                    oc.height = heightTmp = img.height * 0.5;
                     octx.drawImage(img, 0, 0, oc.width, oc.height);
-                    console.log('Final: ' + oc.width);
-                    ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+                    for (var i = 2; i < steps; i++) {
+                        widthTmp *= 0.5;
+                        heightTmp *= 0.5;
+                        octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+                    }
+                    ctx.drawImage(oc, 0, 0, widthTmp, heightTmp, 0, 0, canvas.width, canvas.height);
                 }
                 else {
                     ctx.drawImage(img, 0, 0, width, height);
