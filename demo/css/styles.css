@@ -94,5 +94,9 @@ p, input, img {
 }
 
 input {
-    margin-top:15px;
+    padding-top:15px;
+}
+
+.text-light {
+    /*opacity:0.6;*/
 }

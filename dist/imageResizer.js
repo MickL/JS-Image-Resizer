@@ -24,34 +24,36 @@ var ImageResizer;
             callbackFn(file);
             return;
         }
+        if (_errorHandling(options))
+            return;
         if (options.debug)
             console.log('Processing image: \'' + file.name + '\'');
         var settings = _extend({}, _defaults, options);
-        errorHandling(settings);
         var img = document.createElement('img');
         img.onload = function () {
-            var width = img.width;
-            var height = img.height;
-            var width_old = width;
-            var height_old = height;
-            var resized = false;
+            var width, width_original;
+            var height, height_original;
+            width = width_original = img.width;
+            height = height_original = img.height;
+            var resize = false;
             if (settings.resize) {
                 if (width > height) {
                     if (width > settings.maxWidth || settings.upscale) {
                         height = Math.round(height * settings.maxWidth / width);
                         width = settings.maxWidth;
-                        resized = true;
+                        resize = true;
                     }
                 }
                 else {
                     if (height > settings.maxHeight || settings.upscale) {
                         width = Math.round(width * settings.maxHeight / height);
                         height = settings.maxHeight;
-                        resized = true;
+                        resize = true;
                     }
                 }
             }
-            if (resized || settings.jpgQuality != 1) {
+            console.log((resize ? 'Resizing from ' + width_original + 'x' + height_original + 'px to ' + width + 'x' + height + 'px' : 'Resizing not required. Image smaller than max dimensions or resizing disabled.'));
+            if (resize || settings.jpgQuality != 1) {
                 var canvas = document.createElement("canvas");
                 var ctx = canvas.getContext("2d");
                 canvas.width = width;
@@ -84,23 +86,22 @@ var ImageResizer;
                         console.log('Sharpening image ' + (settings.sharpen * 100) + '%');
                     _sharpen(ctx, canvas.width, canvas.height, settings.sharpen);
                 }
-                var dataURL = canvas.toDataURL("image/jpeg", settings.jpgQuality);
-                var blob = _dataURLToBlob(dataURL);
                 if (options.debug) {
                     console.log('Setting jpeg-quality to: ' + settings.jpgQuality);
-                    console.log((resized ? 'Resizing from ' + width_old + 'x' + height_old + 'px to ' + width + 'x' + height + 'px' : 'Resizing not required. Image smaller than max dimensions or resizing disabled.'));
                 }
+                var dataURL = canvas.toDataURL("image/jpeg", settings.jpgQuality);
+                var blob = _dataURLToBlob(dataURL);
                 if (Modernizr.filesystem && settings.returnFileObject) {
                     var fileName;
                     if (settings.renameFile) {
                         var name = file.name.replace(/\.[^/.]+$/, "");
-                        fileName = name + (resized ? '_resized' : '') + (settings.jpgQuality != 1 ? '_compressed' : '') + '.jpg';
+                        fileName = name + (resize ? '_resized' : '') + (settings.jpgQuality != 1 ? '_compressed' : '') + '.jpg';
+                        if (options.debug)
+                            console.log('Renaming file from \'' + file.name + '\' to \'' + fileName + '\'');
                     }
                     else {
                         fileName = file.name;
                     }
-                    if (options.debug)
-                        console.log('Renamed file from \'' + file.name + '\' to \'' + fileName + '\'');
                     var newFile = new File([blob], fileName, { type: blob.type, lastModified: (new Date()).getTime() });
                     if (options.debug)
                         console.log('Finished processing. Returning File object: \n' +
@@ -182,11 +183,15 @@ var ImageResizer;
                     arguments[0][key] = arguments[i][key];
         return arguments[0];
     }
-    function errorHandling(settings) {
-        if (settings.jpgQuality < 0 || settings.jpgQuality > 1)
-            console.error('Option jpgQuality must be between 0 and 1');
-        if (settings.sharpen < 0 || settings.sharpen > 1)
-            console.error('Option sharpen must be between 0 and 1');
+    function _errorHandling(settings) {
+        if (settings.jpgQuality < 0 || settings.jpgQuality > 1) {
+            console.error('Option \'jpgQuality\' must be between 0 and 1');
+            return true;
+        }
+        if (settings.sharpen < 0 || settings.sharpen > 1) {
+            console.error('Option \'sharpen\' must be between 0 and 1');
+            return true;
+        }
     }
 })(ImageResizer || (ImageResizer = {}));
 //# sourceMappingURL=imageResizer.js.map
