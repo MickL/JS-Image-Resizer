@@ -52,6 +52,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/startswith.js"></script>
     <script src="js/modernizr-custom.js"></script>
+    <script src="js/demo.js"></script>
     <script src="js/imageResizer.min.js"></script>
 
     <script>
@@ -61,10 +62,7 @@
             $('#inputFile').on('change', function () {
                 // Detect filereader support
                 if (!Modernizr.filereader) {
-                    $('#resultHeadline').show().text('Error');
-                    $('#processTime').text('');
-                    $('#result').text('Your browser doesnt support File Reader API. Cannot load file from input field.');
-                    $('#inputFile').val('');
+                    Demo.showError('Your browser doesnt support File Reader API. Cannot load file from input field.');
                     return;
                 }
 
@@ -77,24 +75,22 @@
                 }
 
                 // Filetype is no image
-                if(!file.type.startsWith('image')) {
-                    $('#resultHeadline').show().text('Error');
-                    $('#processTime').text('');
-                    $('#result').text('Selected file '+ file.name +' is no image.');
-                    $('#inputFile').val('');
+                if (!file.type.startsWith('image')) {
+                    Demo.showError('Selected file \'' + file.name + '\' is no image.');
                     return;
                 }
 
                 // Set options
                 var options = {
-                    maxWidth:   500,
-                    maxHeight:  500,
-                    debug:      true
+                    maxWidth:  500,
+                    maxHeight: 500,
+                    debug:     true
                 };
 
                 // Start time
                 t0 = performance.now();
 
+                // Resize image with ImageResizer
                 ImageResizer.resizeImage(file, options, function (result) {
                     // End time
                     t1 = performance.now();
@@ -109,6 +105,7 @@
                     // Create and display image
                     var image = new Image();
                     image.src = URL.createObjectURL(result);
+                    $(image).addClass('img-responsive');
                     $('#result').html(image);
                 });
             });
