@@ -21,7 +21,7 @@ You can convert png to jpg and set a background-color for transparent png too.
 
 ```
 ImageResizer.resizeImage(file, options, function(resultFile) {
-    // Do something with your file
+    // Do something with your file, e.g. upload to server
 });
 ```
 
@@ -31,8 +31,25 @@ or
 ImageResizer.resizeImage(file, options, myCallbackFn);
 
 var myCallbackFn = function(resultFile) {
-    // Do something with your file
+    // Do something with your file, e.g. upload to server
 };
+```
+
+To only change jpg-quality, simply set options:
+```
+var options = {
+    resize:          false,
+    jpgQuality:      0.8
+}
+```
+
+Or to convert png/svg to jpg:
+```
+var options = {
+    resize:          false,
+    pngToJpg:        true,
+    pngToJpgBgColor: "#FFFFFF" 
+}
 ```
 
 **Default options:**
