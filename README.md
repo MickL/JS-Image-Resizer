@@ -43,29 +43,29 @@ var options = {
 }
 ```
 
-Or to convert png/svg to jpg:
+Or to only convert png/svg to jpg:
 ```
 var options = {
-    resize:          false,
-    pngToJpg:        true,
-    pngToJpgBgColor: "#FFFFFF" 
+    resize:              false,
+    convertToJpg:        true,
+    convertToJpgBgColor: "#FFFFFF" 
 }
 ```
 
 **Default options:**
 ```
 {
-    maxWidth:         500,       // px
-    maxHeight:        500,       // px
-    resize:           true,      // Set to false to just set jpg-quality
-    sharpen:          0.15,      // 0-1
-    jpgQuality:       0.9,       // 0-1, doesnt affect when pngToJpg == false
-    pngToJpg:         false,     // Convert png to jpg
-    pngToJpgBgColor:  "#FFFFFF", // Background color when converting transparent png to jpg
-    returnFileObject: true,      // Returns a file-object if browser support. Set to false to always return blob.
-    upscale:          false,     // Set to true to upscale the image if smaller than maxDimensions
-    debug:            false,     // Set to true to see console.log's
-    renameFile:       true       // Renames the file to filename_resized.jpg / filename_compressed.jpg / filename_resized_compressed.jpg. Only works with File object.
+    maxWidth:            500,       // px
+    maxHeight:           500,       // px
+    resize:              true,      // Set to false to just set jpg-quality
+    sharpen:             0.15,      // 0-1
+    jpgQuality:          0.9,       // 0-1, doesnt affect when pngToJpg == false
+    convertToJpg:        false,     // Convert png/svg to jpg
+    convertToJpgBgColor: "#FFFFFF", // Background color when converting transparent png/svg to jpg
+    returnFileObject:    true,      // Returns a file-object if browser support. Set to false to always return blob.
+    upscale:             false,     // Set to true to upscale the image if smaller than maxDimensions
+    debug:               false,     // Set to true to see console.log's
+    renameFile:          true       // Renames the file to filename_resized.jpg / filename_compressed.jpg / filename_resized_compressed.jpg. Only works with File object.
 }
 ```
 

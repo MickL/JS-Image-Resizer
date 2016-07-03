@@ -5,17 +5,17 @@ namespace ImageResizer {
      * Default options
      */
     var _defaults:Options = {
-        maxWidth:         500,       // px
-        maxHeight:        500,       // px
-        resize:           true,      // Set to false to just set jpg-quality
-        sharpen:          0.15,      // 0-1
-        jpgQuality:       0.9,       // 0-1, doesnt affect when pngToJpg == false
-        pngToJpg:         false,     // Convert png to jpg
-        pngToJpgBgColor:  "#FFFFFF", // Background color when converting transparent png to jpg
-        returnFileObject: true,      // Returns a file-object if browser support. Set to false to always return blob.
-        upscale:          false,     // Set to true to upscale the image if smaller than maxDimensions
-        debug:            false,     // Set to true to see console.log's
-        renameFile:       true       // Renames the file to filename_resized.jpg / filename_compressed.jpg / filename_resized_compressed.jpg. Only works with File object.
+        maxWidth:            500,       // px
+        maxHeight:           500,       // px
+        resize:              true,      // Set to false to just set jpg-quality
+        sharpen:             0.15,      // 0-1
+        jpgQuality:          0.9,       // 0-1, doesnt affect when pngToJpg == false
+        convertToJpg:        false,     // Convert png/svg to jpg
+        convertToJpgBgColor: "#FFFFFF", // Background color when converting transparent png/svg to jpg
+        returnFileObject:    true,      // Returns a file-object if browser support. Set to false to always return blob.
+        upscale:             false,     // Set to true to upscale the image if smaller than maxDimensions
+        debug:               false,     // Set to true to see console.log's
+        renameFile:          true       // Renames the file to filename_resized.jpg / filename_compressed.jpg / filename_resized_compressed.jpg. Only works with File object.
     };
 
     /**
@@ -98,11 +98,11 @@ namespace ImageResizer {
                 console.log(file.type);
 
                 // Set background color when converting transparent png to jpg
-                if(settings.pngToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
+                if(settings.convertToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
                     if(options.debug)
-                        console.log('Convertig PNG/SVG to JPG with background-color: ' + settings.pngToJpgBgColor);
+                        console.log('Convertig PNG/SVG to JPG with background-color: ' + settings.convertToJpgBgColor);
 
-                    ctx.fillStyle = settings.pngToJpgBgColor;
+                    ctx.fillStyle = settings.convertToJpgBgColor;
                     ctx.fillRect(0,0,width,height);
                 }
 
@@ -151,7 +151,7 @@ namespace ImageResizer {
                 // Get Data-URL and set image quality
                 var dataURL:string, fileType:string;
 
-                if(!settings.pngToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
+                if(!settings.convertToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
                     dataURL = canvas.toDataURL('image/png');
                     fileType = "png";
                 } else {

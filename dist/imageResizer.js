@@ -6,8 +6,8 @@ var ImageResizer;
         resize: true,
         sharpen: 0.15,
         jpgQuality: 0.9,
-        pngToJpg: false,
-        pngToJpgBgColor: "#FFFFFF",
+        convertToJpg: false,
+        convertToJpgBgColor: "#FFFFFF",
         returnFileObject: true,
         upscale: false,
         debug: false,
@@ -61,10 +61,10 @@ var ImageResizer;
                 canvas.width = width;
                 canvas.height = height;
                 console.log(file.type);
-                if (settings.pngToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
+                if (settings.convertToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
                     if (options.debug)
-                        console.log('Convertig PNG/SVG to JPG with background-color: ' + settings.pngToJpgBgColor);
-                    ctx.fillStyle = settings.pngToJpgBgColor;
+                        console.log('Convertig PNG/SVG to JPG with background-color: ' + settings.convertToJpgBgColor);
+                    ctx.fillStyle = settings.convertToJpgBgColor;
                     ctx.fillRect(0, 0, width, height);
                 }
                 var steps;
@@ -96,7 +96,7 @@ var ImageResizer;
                     _sharpen(ctx, canvas.width, canvas.height, settings.sharpen);
                 }
                 var dataURL, fileType;
-                if (!settings.pngToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
+                if (!settings.convertToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
                     dataURL = canvas.toDataURL('image/png');
                     fileType = "png";
                 }
