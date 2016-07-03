@@ -95,10 +95,12 @@ namespace ImageResizer {
                 canvas.width   = width;
                 canvas.height  = height;
 
+                console.log(file.type);
+
                 // Set background color when converting transparent png to jpg
-                if(settings.pngToJpg && file.type == 'image/png') {
+                if(settings.pngToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
                     if(options.debug)
-                        console.log('Convertig PNG to JPG with background-color: ' + settings.pngToJpgBgColor);
+                        console.log('Convertig PNG/SVG to JPG with background-color: ' + settings.pngToJpgBgColor);
 
                     ctx.fillStyle = settings.pngToJpgBgColor;
                     ctx.fillRect(0,0,width,height);
@@ -149,7 +151,7 @@ namespace ImageResizer {
                 // Get Data-URL and set image quality
                 var dataURL:string, fileType:string;
 
-                if(!settings.pngToJpg && file.type == 'image/png') {
+                if(!settings.pngToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
                     dataURL = canvas.toDataURL('image/png');
                     fileType = "png";
                 } else {

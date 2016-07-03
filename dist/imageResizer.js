@@ -60,9 +60,10 @@ var ImageResizer;
                 var ctx = canvas.getContext("2d");
                 canvas.width = width;
                 canvas.height = height;
-                if (settings.pngToJpg && file.type == 'image/png') {
+                console.log(file.type);
+                if (settings.pngToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
                     if (options.debug)
-                        console.log('Convertig PNG to JPG with background-color: ' + settings.pngToJpgBgColor);
+                        console.log('Convertig PNG/SVG to JPG with background-color: ' + settings.pngToJpgBgColor);
                     ctx.fillStyle = settings.pngToJpgBgColor;
                     ctx.fillRect(0, 0, width, height);
                 }
@@ -95,7 +96,7 @@ var ImageResizer;
                     _sharpen(ctx, canvas.width, canvas.height, settings.sharpen);
                 }
                 var dataURL, fileType;
-                if (!settings.pngToJpg && file.type == 'image/png') {
+                if (!settings.pngToJpg && (file.type == 'image/png' || file.type == 'image/svg+xml')) {
                     dataURL = canvas.toDataURL('image/png');
                     fileType = "png";
                 }

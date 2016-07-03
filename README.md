@@ -1,7 +1,7 @@
 #JavaScript ImageResizer
 Resize images on client side, using plain JavaScript. Only 4KB minified and written in TypeScript.
 
-This script offers smooth resizing by using multiple down-scaling steps(depending on source- and target-dimensions) and sharpen after resizing.
+This script offers smooth resizing by using multiple down-scaling steps(depending on source- and target-dimensions) and sharpen after resizing. You can also convert (transparent) png or svg to jpg, or (transparent) svg to (transparent) png.
 
 Use this script e.g. if you want to resize images before upload or display a thumbnail.
 
