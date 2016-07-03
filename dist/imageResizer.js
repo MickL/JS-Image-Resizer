@@ -6,6 +6,8 @@ var ImageResizer;
         resize: true,
         sharpen: 0.15,
         jpgQuality: 0.9,
+        pngToJpg: false,
+        pngToJpgBgColor: "#FFFFFF",
         returnFileObject: true,
         upscale: false,
         debug: false,
@@ -58,6 +60,12 @@ var ImageResizer;
                 var ctx = canvas.getContext("2d");
                 canvas.width = width;
                 canvas.height = height;
+                if (settings.pngToJpg && file.type == 'image/png') {
+                    if (options.debug)
+                        console.log('Convertig PNG to JPG with background-color: ' + settings.pngToJpgBgColor);
+                    ctx.fillStyle = settings.pngToJpgBgColor;
+                    ctx.fillRect(0, 0, width, height);
+                }
                 var steps;
                 if (width > height) {
                     steps = Math.ceil(Math.log(img.width / width) / Math.log(2));
@@ -86,16 +94,23 @@ var ImageResizer;
                         console.log('Sharpening image ' + (settings.sharpen * 100) + '%');
                     _sharpen(ctx, canvas.width, canvas.height, settings.sharpen);
                 }
-                if (options.debug) {
-                    console.log('Setting jpeg-quality to: ' + settings.jpgQuality);
+                var dataURL, fileType;
+                if (!settings.pngToJpg && file.type == 'image/png') {
+                    dataURL = canvas.toDataURL('image/png');
+                    fileType = "png";
                 }
-                var dataURL = canvas.toDataURL("image/jpeg", settings.jpgQuality);
+                else {
+                    if (options.debug)
+                        console.log('Setting jpeg-quality to: ' + settings.jpgQuality);
+                    dataURL = canvas.toDataURL('image/jpeg', settings.jpgQuality);
+                    fileType = "jpg";
+                }
                 var blob = _dataURLToBlob(dataURL);
                 if (Modernizr.filesystem && settings.returnFileObject) {
                     var fileName;
                     if (settings.renameFile) {
                         var name = file.name.replace(/\.[^/.]+$/, "");
-                        fileName = name + (resize ? '_resized' : '') + (settings.jpgQuality != 1 ? '_compressed' : '') + '.jpg';
+                        fileName = name + (resize ? '_resized' : '') + (settings.jpgQuality != 1 ? '_compressed' : '') + '.' + fileType;
                         if (options.debug)
                             console.log('Renaming file from \'' + file.name + '\' to \'' + fileName + '\'');
                     }

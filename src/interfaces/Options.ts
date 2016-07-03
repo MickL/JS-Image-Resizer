@@ -5,6 +5,8 @@ namespace ImageResizer {
         resize:           boolean;
         sharpen:          number;
         jpgQuality:       number;
+        pngToJpg:         boolean;
+        pngToJpgBgColor:  string;
         returnFileObject: boolean;
         upscale:          boolean;
         debug:            boolean;
