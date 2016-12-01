@@ -1,27 +1,27 @@
-#JavaScript ImageResizer
+#JavaScript image resizer
 Resize images on client side, using plain JavaScript. Only 4KB minified and written in TypeScript.
 
 This script offers smooth resizing by using multiple down-scaling steps(depending on source- and target-dimensions) and sharpen after resizing. You can also convert (transparent) png or svg to jpg, or (transparent) svg to (transparent) png.
 
 Use this script e.g. if you want to resize images before upload or to display a thumbnail.
 
-ImageResizer returns a File-object if [File API](http://caniuse.com/#feat=fileapi) is available. Otherwise it returns a Blob. If [Blob constructor](http://caniuse.com/#feat=fileapi) or [Canvas 2D drawing](http://caniuse.com/#feat=canvas) is not available, it just returns the original file. Therefore it should be usable in all browsers. You can use either to display the image on your page or upload it.
+JS-ImageResizer returns a File-object if [File API](http://caniuse.com/#feat=fileapi) is available. Otherwise it returns a Blob. If [Blob constructor](http://caniuse.com/#feat=fileapi) or [Canvas 2D drawing](http://caniuse.com/#feat=canvas) is not available, it just returns the original file. Therefore it should be usable in all browsers. You can use either to display the image on your page or upload it.
 
 
 ##Demo
-[ImageResizer Demo](http://www.lawitzke.com/imageresizer)
+[JS-ImageResizer Demo](http://www.lawitzke.com/imageresizer)
 
 ##Usage
 Because image.onload is used, the resizing works asynchronous. Hence you have to specify a callback function.
 You can also change the jpg-quality only, without resizing the image by using the option `resize:false`.
 
-You can convert png to jpg and set a background-color for transparent png too.
+You can convert png to jpg and set a background-color for transparent png, too.
 
 **Usage:**
 
 ```
 ImageResizer.resizeImage(file, options, function(resultFile) {
-    // Do something with your file, e.g. upload to server
+    // Do something with your file(resultFile), e.g. upload to server
 });
 ```
 
@@ -31,7 +31,7 @@ or
 ImageResizer.resizeImage(file, options, myCallbackFn);
 
 var myCallbackFn = function(resultFile) {
-    // Do something with your file, e.g. upload to server
+    // Do something with your file(resultFile), e.g. upload to server
 };
 ```
 
@@ -80,4 +80,4 @@ You can report bugs or feature requests within GitHub Issues.
 Alot of code is proudly copied from StackOverflow and other sources. `@see` the comments within source code for resources. 
 
 ##Lincense
-ImageResizer is released under the [MIT License](https://ben.mit-license.org/)
+JS-ImageResizer is released under the [MIT License](https://ben.mit-license.org/)
