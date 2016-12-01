@@ -3,9 +3,9 @@ Resize images on client side, using plain JavaScript. Only 4KB minified and writ
 
 This script offers smooth resizing by using multiple down-scaling steps(depending on source- and target-dimensions) and sharpen after resizing. You can also convert (transparent) png or svg to jpg, or (transparent) svg to (transparent) png.
 
-Use this script e.g. if you want to resize images before upload or display a thumbnail.
+Use this script e.g. if you want to resize images before upload or to display a thumbnail.
 
-ImageResizer returns a File-object if [File API](http://caniuse.com/#feat=fileapi) is available. Otherwise it returns a Blob. If [Blob constructor](http://caniuse.com/#feat=fileapi) or [Canvas 2D drawing](http://caniuse.com/#feat=canvas) is not available, it just returns the original file. Therefore it should be usable in all browsers.
+ImageResizer returns a File-object if [File API](http://caniuse.com/#feat=fileapi) is available. Otherwise it returns a Blob. If [Blob constructor](http://caniuse.com/#feat=fileapi) or [Canvas 2D drawing](http://caniuse.com/#feat=canvas) is not available, it just returns the original file. Therefore it should be usable in all browsers. You can use either to display the image on your page or upload it.
 
 
 ##Demo
