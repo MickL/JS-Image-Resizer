@@ -9,7 +9,7 @@ JS-ImageResizer returns a File-object if [File API](http://caniuse.com/#feat=fil
 
 
 ## Demo
-[JS-ImageResizer Demo](http://www.lawitzke.com/imageresizer)
+[JavaScript image resizer demo](http://www.lawitzke.com/demo/js-image-resizer)
 
 ## Usage
 Because image.onload is used, the resizing works asynchronous. Hence you have to specify a callback function.
