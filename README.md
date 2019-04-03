@@ -1,3 +1,6 @@
+### OUTDATED - Please use [ts-image-precessor](https://github.com/MickL/ts-image-precessor) instead!
+
+
 # JavaScript image resizer
 Resize images on client side, using plain JavaScript. Only 4KB minified and written in TypeScript.
 
